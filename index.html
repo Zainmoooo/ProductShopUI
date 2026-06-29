@@ -732,16 +732,22 @@ html, body {
 .drawer {
   position: fixed;
   bottom: 0; left: 50%; transform: translateX(-50%);
-  width: 393px; height: 89px;
+  width: 393px; min-height: 89px;
   background: var(--white);
   border-top: 1px solid var(--border-light);
   display: flex; align-items: center; justify-content: space-between;
-  padding: 0 20px;
+  padding: 16px 20px;
   z-index: 100;
+  transition: min-height 0.25s;
 }
+.drawer-left { display: flex; flex-direction: column; gap: 6px; }
 .drawer-price-val { font-size: 20px; font-weight: 800; color: var(--dark); font-family: var(--font); }
 .drawer-price-val span { font-size: 13px; font-weight: 500; }
 .drawer-price-label { font-size: 12px; font-weight: 400; color: var(--gray2); margin-top: 3px; font-family: var(--font); }
+.drawer-tradein-block { display: none; flex-direction: column; gap: 2px; margin-top: 2px; }
+.drawer-tradein-val { font-size: 18px; font-weight: 700; color: var(--dark); font-family: var(--font); }
+.drawer-tradein-val .drawer-tradein-suffix { font-size: 12px; font-weight: 400; color: var(--gray2); }
+.drawer-tradein-free { font-size: 14px; font-weight: 600; color: var(--gray2); font-family: var(--font); display: flex; align-items: center; gap: 4px; margin-top: 1px; }
 .continue-btn {
   padding: 14px 30px;
   border-radius: 14px; border: none;
@@ -778,6 +784,125 @@ html, body {
   display: none;
 }
 .storage-error.visible { display: block; }
+
+/* ── TRADE-IN SECTION ── */
+.tradein-desc {
+  font-size: 14px; font-weight: 400; color: var(--gray1);
+  margin-top: -12px; margin-bottom: 16px; line-height: 1.5;
+  font-family: var(--font);
+}
+.tradein-cards { display: flex; flex-direction: column; gap: 8px; }
+.tradein-option {
+  display: flex; align-items: center; gap: 8px;
+  padding: 16px;
+  min-height: 92px;
+  border-radius: 16px;
+  border: 0.5px solid rgba(0,0,0,0.2);
+  background: var(--white);
+  cursor: pointer; transition: all 0.2s;
+}
+.tradein-option.selected {
+  border: 1px solid var(--pink-border);
+  box-shadow: inset 0 4px 7px var(--pink-shadow);
+}
+.tradein-option-left { flex: 1; }
+.tradein-option-title { font-size: 16px; font-weight: 700; color: var(--dark); font-family: var(--font); }
+.tradein-option-subtitle { font-size: 14px; font-weight: 400; color: var(--gray1); font-family: var(--font); margin-top: 4px; }
+.tradein-sel-row { display: flex; align-items: center; gap: 10px; }
+.tradein-sel-row + .tradein-sel-row { margin-top: 4px; }
+.tradein-sel-icon { width: 20px; height: 20px; flex-shrink: 0; display: flex; align-items: center; justify-content: center; }
+.tradein-sel-text { font-size: 16px; font-weight: 700; color: var(--dark); font-family: var(--font); }
+.tradein-sel-subtext { font-size: 14px; font-weight: 400; color: var(--gray1); font-family: var(--font); }
+
+/* ── TRADE-IN MODAL ── */
+.tradein-overlay {
+  display: none;
+  position: fixed; top: 0; bottom: 0;
+  left: 50%; transform: translateX(-50%);
+  width: 393px;
+  background: rgba(0,0,0,0.45);
+  z-index: 200;
+  justify-content: center; align-items: flex-end;
+}
+.tradein-overlay.open { display: flex; }
+.tradein-sheet {
+  width: 393px; background: #fff;
+  border-radius: 12px 12px 0 0; overflow: hidden;
+  transform: translateY(100%);
+  transition: transform 300ms ease-out;
+}
+.tradein-overlay.open .tradein-sheet { transform: translateY(0); }
+.tradein-handle-wrap { display: flex; justify-content: center; padding: 12px 0 4px; }
+.tradein-handle { width: 50px; height: 4px; background: #a3a3a3; border-radius: 100px; }
+.tradein-modal-nav {
+  height: 58px; display: flex; align-items: center; justify-content: center; position: relative;
+}
+.tradein-modal-title { font-size: 16px; font-weight: 700; color: var(--dark); font-family: var(--font); }
+.tradein-modal-close {
+  position: absolute; right: 8px; top: 50%; transform: translateY(-50%);
+  width: 40px; height: 42px; background: none; border: none; cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+}
+.tradein-divider { height: 1px; background: var(--border-light); }
+.tradein-q-section { padding: 24px 16px 16px; }
+.tradein-q-label { font-size: 16px; font-weight: 600; color: var(--dark); font-family: var(--font); margin-bottom: 12px; }
+.tradein-search-wrap {
+  display: flex; align-items: center; gap: 8px;
+  padding: 12px 14px; border-radius: 12px;
+  background: #f5f5f5; border: 0.5px solid rgba(144,145,150,0.3);
+}
+.tradein-search-input {
+  flex: 1; border: none; background: none; outline: none;
+  font-size: 14px; font-weight: 400; color: var(--dark); font-family: var(--font);
+}
+.tradein-search-input::placeholder { color: var(--gray2); }
+.tradein-autocomplete {
+  display: none; flex-direction: column; margin-top: 6px;
+  border-radius: 12px; border: 0.5px solid var(--border-light); overflow: hidden;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+}
+.tradein-suggestion {
+  padding: 14px 16px; font-size: 15px; font-weight: 400;
+  color: var(--dark); font-family: var(--font);
+  border-bottom: 1px solid var(--border-light);
+  cursor: pointer; background: white; transition: background 0.15s;
+}
+.tradein-suggestion:last-child { border-bottom: none; }
+.tradein-suggestion:active { background: #f9f9f9; }
+.tradein-device-sel {
+  display: none; align-items: center; justify-content: space-between;
+  padding: 10px 14px; border-radius: 12px;
+  height: 60px; box-sizing: border-box;
+  border: 1px solid var(--pink-border); background: white;
+  box-shadow: inset 0 4px 7px var(--pink-shadow);
+}
+.tradein-device-sel-left { display: flex; align-items: center; gap: 10px; }
+.tradein-device-sel-name { font-size: 15px; font-weight: 700; color: var(--dark); font-family: var(--font); }
+.tradein-change-btn {
+  font-size: 14px; font-weight: 700; color: var(--pink);
+  cursor: pointer; font-family: var(--font); background: none; border: none; padding: 0;
+}
+.tradein-cond-row { display: flex; gap: 8px; }
+.condition-chip {
+  flex: 1; height: 56px; display: flex; align-items: center; justify-content: center;
+  border-radius: 12px; border: 0.5px solid #d9d9d9; background: white;
+  font-size: 14px; font-weight: 600; color: var(--dark); font-family: var(--font);
+  cursor: pointer; transition: all 0.2s;
+}
+.condition-chip.selected {
+  background: white; border: 1px solid var(--pink-border); color: var(--pink);
+  box-shadow: inset 0px 4px 7px 0px rgba(227,44,143,0.25);
+}
+.tradein-cta-section { padding: 12px 16px 16px; }
+.tradein-cta-btn {
+  width: 100%; height: 48px; border-radius: 12px; border: none;
+  background: #e5e5e5; color: var(--gray2);
+  font-size: 16px; font-weight: 700; font-family: var(--font);
+  cursor: not-allowed; transition: all 0.25s;
+}
+.tradein-cta-btn.active { background: var(--pink); color: white; cursor: pointer; }
+.tradein-home { height: 21px; display: flex; align-items: center; justify-content: center; padding-bottom: 8px; }
+.tradein-home-pill { width: 134px; height: 5px; background: #000; border-radius: 3px; }
 </style>
 </head>
 <body>
@@ -1180,6 +1305,50 @@ html, body {
       </div>
     </div>
 
+    <!-- TRADE-IN -->
+    <div class="section" id="secTradeIn" style="display:none">
+      <p class="section-title">Trade in <strong>your old device.</strong></p>
+      <p class="section-subtitle">Get <strong style="color:#171717;font-weight:700">KD 100 – 200</strong> credit toward your new device.</p>
+      <div class="tradein-cards">
+
+        <!-- Card 1 UNSELECTED -->
+        <div class="tradein-option" id="tradeinCard1Unsel" onclick="selectTradeInOption('tradein')">
+          <div class="tradein-option-left">
+            <div class="tradein-option-title">Trade in your device</div>
+            <div class="tradein-option-subtitle">Answer a few questions to get your estimate.</div>
+          </div>
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#737373" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg>
+        </div>
+
+        <!-- Card 1 SELECTED (shown after completing trade-in modal) -->
+        <div class="tradein-option selected" id="tradeinCard1Sel" style="display:none;" onclick="openTradeInModal()">
+          <div class="tradein-option-left">
+            <div class="tradein-sel-row">
+              <div class="tradein-sel-icon">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#171717" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="2" width="14" height="20" rx="2"/><line x1="12" y1="18" x2="12.01" y2="18" stroke-width="2" stroke-linecap="round"/></svg>
+              </div>
+              <span class="tradein-sel-text" id="tradeinSelDevice"></span>
+            </div>
+            <div class="tradein-sel-row">
+              <div class="tradein-sel-icon">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#171717" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="6" width="20" height="12" rx="2"/><circle cx="12" cy="12" r="2"/><path d="M6 12h.01M18 12h.01" stroke-linecap="round"/></svg>
+              </div>
+              <span class="tradein-sel-subtext">Estimated value: <strong id="tradeinSelPrice" style="color:var(--pink)">KD –</strong></span>
+            </div>
+          </div>
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#e32b8f" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg>
+        </div>
+
+        <!-- Card 2: No trade in -->
+        <div class="tradein-option" id="tradeinCard2" onclick="selectTradeInOption('notradein')">
+          <div class="tradein-option-left">
+            <div class="tradein-option-title">No trade in</div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
     <!-- ACCESSORIES -->
     <div class="section locked" id="secAcc">
       <p class="section-title"><strong>Complete your experience.</strong></p>
@@ -1412,11 +1581,90 @@ html, body {
     </div>
   </div>
 
+  <!-- TRADE-IN MODAL -->
+  <div class="tradein-overlay" id="tradeinOverlay" onclick="handleTradeinOverlayClick(event)">
+    <div class="tradein-sheet" id="tradeinSheet">
+
+      <!-- Handle + Nav -->
+      <div class="tradein-handle-wrap"><div class="tradein-handle"></div></div>
+      <div class="tradein-modal-nav">
+        <span class="tradein-modal-title">Trade in your device</span>
+        <button class="tradein-modal-close" onclick="closeTradeInModal()">
+          <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M11.7071 1.70711C12.0976 1.31658 12.0976 0.683418 11.7071 0.292893C11.3166 -0.0976311 10.6834 -0.0976311 10.2929 0.292893L6 4.58579L1.70711 0.292893C1.31658 -0.0976311 0.683418 -0.0976311 0.292893 0.292893C-0.0976311 0.683418 -0.0976311 1.31658 0.292893 1.70711L4.58579 6L0.292893 10.2929C-0.0976311 10.6834 -0.0976311 11.3166 0.292893 11.7071C0.683418 12.0976 1.31658 12.0976 1.70711 11.7071L6 7.41421L10.2929 11.7071C10.6834 12.0976 11.3166 12.0976 11.7071 11.7071C12.0976 11.3166 12.0976 10.6834 11.7071 10.2929L7.41421 6L11.7071 1.70711Z" fill="#171717"/></svg>
+        </button>
+      </div>
+      <div class="tradein-divider"></div>
+
+      <!-- Q1: Device -->
+      <div class="tradein-q-section">
+        <p class="tradein-q-label">What's your old device?</p>
+        <div id="tradeinSearchWrap">
+          <div class="tradein-search-wrap">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#a3a3a3" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+            <input class="tradein-search-input" id="tradeinSearch" type="text" placeholder="Search your device..." oninput="onTradeInSearch(this)" autocomplete="off">
+          </div>
+          <div class="tradein-autocomplete" id="tradeinAutocomplete"></div>
+        </div>
+        <div class="tradein-device-sel" id="tradeinDeviceSel">
+          <div class="tradein-device-sel-left">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#171717" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="2" width="14" height="20" rx="2"/><line x1="12" y1="18" x2="12.01" y2="18" stroke-width="2" stroke-linecap="round"/></svg>
+            <span class="tradein-device-sel-name" id="tradeinDeviceName"></span>
+          </div>
+          <button class="tradein-change-btn" onclick="changeTradeInDevice()">Change</button>
+        </div>
+      </div>
+
+      <div class="tradein-divider"></div>
+
+      <!-- Q2: Screen broken -->
+      <div class="tradein-q-section">
+        <p class="tradein-q-label">Is the screen broken?</p>
+        <div class="tradein-cond-row">
+          <button class="condition-chip" id="screenYes" onclick="selectScreenBroken(this,'yes')">Yes</button>
+          <button class="condition-chip" id="screenNo"  onclick="selectScreenBroken(this,'no')">No</button>
+        </div>
+      </div>
+
+      <div class="tradein-divider"></div>
+
+      <!-- Q3: Body cracks -->
+      <div class="tradein-q-section">
+        <p class="tradein-q-label">Are there any breaks or cracks in the body?</p>
+        <div class="tradein-cond-row">
+          <button class="condition-chip" id="cracksYes" onclick="selectBodyCracks(this,'yes')">Yes</button>
+          <button class="condition-chip" id="cracksNo"  onclick="selectBodyCracks(this,'no')">No</button>
+        </div>
+      </div>
+
+      <div class="tradein-divider"></div>
+
+      <!-- CTA -->
+      <div class="tradein-cta-section">
+        <button class="tradein-cta-btn" id="tradeinCTABtn" disabled onclick="submitTradeIn()">Get my estimate</button>
+      </div>
+
+      <!-- Home indicator -->
+      <div class="tradein-home"><div class="tradein-home-pill"></div></div>
+
+    </div>
+  </div>
+
   <!-- DRAWER -->
   <div class="drawer">
-    <div>
-      <div class="drawer-price-val" id="drawerPrice">KD 0<span>/mo.</span></div>
-      <div class="drawer-price-label">Total monthly price</div>
+    <div class="drawer-left">
+      <div>
+        <div class="drawer-price-val" id="drawerPrice">KD 0<span>/mo.</span></div>
+        <div class="drawer-price-label">Total monthly price</div>
+      </div>
+      <div class="drawer-tradein-block" id="drawerTradeInBlock">
+        <div class="drawer-tradein-val">
+          <span id="drawerTradeInAmt">KD –</span><span class="drawer-tradein-suffix"> /Trade in</span>
+        </div>
+        <div class="drawer-tradein-free">
+          Equal free <span id="drawerFreeMonths">0</span> months
+          <svg onclick="openTradeInInfoModal()" style="cursor:pointer;flex-shrink:0" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#a3a3a3" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg>
+        </div>
+      </div>
     </div>
     <button class="continue-btn" id="continueBtn">Continue</button>
   </div>
@@ -1442,6 +1690,32 @@ html, body {
     </div>
     <div class="exceed-cta-wrap">
       <button class="exceed-cta" onclick="closeExceedModal()">Got it</button>
+    </div>
+    <div class="exceed-home">
+      <div class="exceed-home-pill"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ── TRADE-IN INFO MODAL ── -->
+<div class="exceed-overlay" id="tradeinInfoOverlay" onclick="handleTradeInInfoOverlayClick(event)">
+  <div class="exceed-sheet" id="tradeinInfoSheet">
+    <div class="exceed-drawer">
+      <div class="exceed-drawer-pill"></div>
+    </div>
+    <div class="exceed-nav">
+      <span class="exceed-nav-title">How free months work</span>
+      <button class="exceed-close-btn" onclick="closeTradeInInfoModal()">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+          <path d="M18 6L6 18M6 6l12 12" stroke="#171717" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </button>
+    </div>
+    <div class="exceed-body">
+      <p id="tradeinInfoText"></p>
+    </div>
+    <div class="exceed-cta-wrap">
+      <button class="exceed-cta" onclick="closeTradeInInfoModal()">Got it</button>
     </div>
     <div class="exceed-home">
       <div class="exceed-home-pill"></div>
@@ -1492,6 +1766,14 @@ function goToSlide(i) {
 })();
 
 // ── SECTION UTILS ──
+function showTradeIn() {
+  const el = document.getElementById('secTradeIn');
+  el.style.display = 'block';
+}
+function hideTradeIn() {
+  const el = document.getElementById('secTradeIn');
+  el.style.display = 'none';
+}
 function unlock(id) {
   const el = document.getElementById(id);
   el.classList.remove('locked', 'hidden');
@@ -1560,22 +1842,40 @@ function selectPurchase(card, type) {
   document.querySelectorAll('#secZainPlusDuration .duration-card').forEach(c => c.classList.remove('selected'));
   document.querySelectorAll('#secDuration .duration-card').forEach(c => c.classList.remove('selected', 'exceed-zain'));
 
+  lockSection('secAcc');
+
+  // Reset trade-in selection
+  tradeinDevice = null;
+  tradeinPrice = null;
+  tradeinScreenBroken = null;
+  tradeinBodyCracks = null;
+  document.getElementById('tradeinCard1Unsel').style.display = 'flex';
+  document.getElementById('tradeinCard1Sel').style.display = 'none';
+  document.getElementById('tradeinCard1Unsel').classList.remove('selected');
+  document.getElementById('tradeinCard2').classList.remove('selected');
+
+  const tiEl = document.getElementById('secTradeIn');
+
   if (type === 'existing') {
     unlock('secZainPlusDuration');
     hide('secPlan');
     hide('secDuration');
-    lockSection('secAcc');
+    tiEl.style.display = 'block';
+    tiEl.classList.add('locked');
     smoothScroll('secZainPlusDuration');
   } else if (type === 'newline') {
     hide('secZainPlusDuration');
     unlock('secPlan');
     hide('secDuration');
-    lockSection('secAcc');
+    tiEl.style.display = 'block';
+    tiEl.classList.add('locked');
     smoothScroll('secPlan');
   } else {
     hide('secZainPlusDuration');
     hide('secPlan');
     hide('secDuration');
+    tiEl.style.display = 'none';
+    tiEl.classList.remove('locked');
     unlock('secAcc');
     smoothScroll('secAcc');
   }
@@ -1634,8 +1934,10 @@ function selectPlan(card, group, key, price) {
     S.exceedMode = false;
     document.querySelectorAll('#secDuration .duration-card').forEach(c => c.classList.remove('exceed-zain'));
     hide('secDuration');
-    unlock('secAcc');
-    smoothScroll('secAcc');
+    const tiEl2 = document.getElementById('secTradeIn');
+    tiEl2.style.display = 'block';
+    tiEl2.classList.remove('locked');
+    smoothScroll('secTradeIn');
   }
   updateDrawer();
 }
@@ -1645,8 +1947,10 @@ function selectZainPlusDurationStandalone(card, months, price) {
   document.querySelectorAll('#secZainPlusDuration .duration-card').forEach(c => c.classList.remove('selected'));
   card.classList.add('selected');
   S.duration = months; S.durationPrice = price;
-  unlock('secAcc');
-  smoothScroll('secAcc');
+  const tiEl = document.getElementById('secTradeIn');
+  tiEl.style.display = 'block';
+  tiEl.classList.remove('locked');
+  smoothScroll('secTradeIn');
   updateDrawer();
 }
 
@@ -1664,6 +1968,164 @@ function selectDuration(card, months, price) {
   document.querySelectorAll('#secDuration .duration-card').forEach(c => c.classList.remove('selected'));
   card.classList.add('selected');
   S.duration = months; S.durationPrice = price;
+  const tiEl = document.getElementById('secTradeIn');
+  tiEl.style.display = 'block';
+  tiEl.classList.remove('locked');
+  smoothScroll('secTradeIn');
+  updateDrawer();
+}
+
+// ── TRADE-IN ──
+let tradeinDevice = null;
+let tradeinPrice = null;
+let tradeinScreenBroken = null;
+let tradeinBodyCracks = null;
+let drawerTotalMonthly = 0;
+
+const TRADEIN_DEVICES = [
+  { name: 'iPhone 14',          price: 120 },
+  { name: 'iPhone 14 Plus',     price: 140 },
+  { name: 'iPhone 14 Pro',      price: 160 },
+  { name: 'iPhone 14 Pro Max',  price: 180 },
+  { name: 'iPhone 13',          price: 90  },
+  { name: 'iPhone 13 Pro',      price: 110 },
+  { name: 'iPhone 13 Pro Max',  price: 130 },
+  { name: 'iPhone 12',          price: 70  },
+  { name: 'iPhone 12 Pro',      price: 85  },
+  { name: 'Samsung Galaxy S23', price: 100 },
+  { name: 'Samsung Galaxy S22', price: 75  },
+  { name: 'Samsung Galaxy S21', price: 55  },
+];
+
+function resetTradeInSection() {
+  tradeinDevice = null;
+  tradeinPrice = null;
+  tradeinScreenBroken = null;
+  tradeinBodyCracks = null;
+  document.getElementById('tradeinCard1Unsel').style.display = 'flex';
+  document.getElementById('tradeinCard1Sel').style.display = 'none';
+  document.getElementById('tradeinCard1Unsel').classList.remove('selected');
+  document.getElementById('tradeinCard2').classList.remove('selected');
+}
+
+function selectTradeInOption(type) {
+  if (type === 'tradein') {
+    openTradeInModal();
+  } else {
+    document.getElementById('tradeinCard1Unsel').style.display = 'flex';
+    document.getElementById('tradeinCard1Sel').style.display = 'none';
+    document.getElementById('tradeinCard1Unsel').classList.remove('selected');
+    document.getElementById('tradeinCard2').classList.add('selected');
+    tradeinDevice = null; tradeinPrice = null; tradeinScreenBroken = null; tradeinBodyCracks = null;
+    unlock('secAcc');
+    smoothScroll('secAcc');
+    updateDrawer();
+  }
+}
+
+function openTradeInModal() {
+  // Show previous device if already selected
+  if (tradeinDevice) {
+    document.getElementById('tradeinSearchWrap').style.display = 'none';
+    document.getElementById('tradeinDeviceSel').style.display = 'flex';
+    document.getElementById('tradeinDeviceName').textContent = tradeinDevice;
+  } else {
+    document.getElementById('tradeinSearch').value = '';
+    document.getElementById('tradeinAutocomplete').style.display = 'none';
+    document.getElementById('tradeinSearchWrap').style.display = 'block';
+    document.getElementById('tradeinDeviceSel').style.display = 'none';
+  }
+  // Restore previously selected answers
+  document.getElementById('screenYes').classList.toggle('selected', tradeinScreenBroken === 'yes');
+  document.getElementById('screenNo').classList.toggle('selected', tradeinScreenBroken === 'no');
+  document.getElementById('cracksYes').classList.toggle('selected', tradeinBodyCracks === 'yes');
+  document.getElementById('cracksNo').classList.toggle('selected', tradeinBodyCracks === 'no');
+  updateTradeInCTA();
+  const overlay = document.getElementById('tradeinOverlay');
+  overlay.style.display = 'flex';
+  requestAnimationFrame(() => requestAnimationFrame(() => overlay.classList.add('open')));
+}
+
+function closeTradeInModal() {
+  const overlay = document.getElementById('tradeinOverlay');
+  overlay.classList.remove('open');
+  document.getElementById('tradeinSheet').addEventListener('transitionend', () => {
+    overlay.style.display = 'none';
+  }, { once: true });
+}
+
+function handleTradeinOverlayClick(e) {
+  if (e.target === document.getElementById('tradeinOverlay')) closeTradeInModal();
+}
+
+function onTradeInSearch(input) {
+  const val = input.value.trim();
+  const ac = document.getElementById('tradeinAutocomplete');
+  if (val.length > 0) {
+    const filtered = TRADEIN_DEVICES.filter(d => d.name.toLowerCase().includes(val.toLowerCase()));
+    ac.innerHTML = filtered.map(d => {
+      const idx = d.name.toLowerCase().indexOf(val.toLowerCase());
+      const hi = d.name.slice(0, idx) + '<strong>' + d.name.slice(idx, idx + val.length) + '</strong>' + d.name.slice(idx + val.length);
+      return `<div class="tradein-suggestion" onclick="selectTradeInDevice('${d.name}', ${d.price})">${hi}</div>`;
+    }).join('');
+    ac.style.display = filtered.length ? 'flex' : 'none';
+    ac.style.flexDirection = 'column';
+  } else {
+    ac.style.display = 'none';
+  }
+}
+
+function selectTradeInDevice(device, price) {
+  tradeinDevice = device;
+  tradeinPrice = price;
+  document.getElementById('tradeinSearchWrap').style.display = 'none';
+  document.getElementById('tradeinDeviceSel').style.display = 'flex';
+  document.getElementById('tradeinDeviceName').textContent = device;
+  updateTradeInCTA();
+}
+
+function changeTradeInDevice() {
+  tradeinDevice = null;
+  tradeinPrice = null;
+  document.getElementById('tradeinSearch').value = '';
+  document.getElementById('tradeinAutocomplete').style.display = 'none';
+  document.getElementById('tradeinAutocomplete').style.flexDirection = '';
+  document.getElementById('tradeinSearchWrap').style.display = 'block';
+  document.getElementById('tradeinDeviceSel').style.display = 'none';
+  updateTradeInCTA();
+}
+
+function selectScreenBroken(chip, val) {
+  document.getElementById('screenYes').classList.remove('selected');
+  document.getElementById('screenNo').classList.remove('selected');
+  chip.classList.add('selected');
+  tradeinScreenBroken = val;
+  updateTradeInCTA();
+}
+
+function selectBodyCracks(chip, val) {
+  document.getElementById('cracksYes').classList.remove('selected');
+  document.getElementById('cracksNo').classList.remove('selected');
+  chip.classList.add('selected');
+  tradeinBodyCracks = val;
+  updateTradeInCTA();
+}
+
+function updateTradeInCTA() {
+  const btn = document.getElementById('tradeinCTABtn');
+  const ready = !!(tradeinDevice && tradeinScreenBroken && tradeinBodyCracks);
+  btn.classList.toggle('active', ready);
+  btn.disabled = !ready;
+}
+
+function submitTradeIn() {
+  if (!tradeinDevice || !tradeinScreenBroken || !tradeinBodyCracks) return;
+  closeTradeInModal();
+  document.getElementById('tradeinCard1Unsel').style.display = 'none';
+  document.getElementById('tradeinCard1Sel').style.display = 'flex';
+  document.getElementById('tradeinSelDevice').textContent = tradeinDevice;
+  document.getElementById('tradeinSelPrice').textContent = 'KD ' + tradeinPrice;
+  document.getElementById('tradeinCard2').classList.remove('selected');
   unlock('secAcc');
   smoothScroll('secAcc');
   updateDrawer();
@@ -1681,7 +2143,9 @@ function toggleAcc(btn, price) {
 function updateDrawer() {
   const priceEl = document.getElementById('drawerPrice');
   const btn = document.getElementById('continueBtn');
+  const tiBlock = document.getElementById('drawerTradeInBlock');
   let ready = false;
+  let totalMonthly = 0;
 
   if (S.purchase === 'cash' && S.storage) {
     const total = S.storageBasePrice + S.accTotal;
@@ -1691,6 +2155,7 @@ function updateDrawer() {
     const mo = S.durationPrice;
     if (mo > 0) {
       const total = mo + S.accTotal;
+      totalMonthly = total;
       priceEl.innerHTML = `KD ${total % 1 === 0 ? total : total.toFixed(1)}<span>/mo.</span>`;
       ready = true;
     } else {
@@ -1700,6 +2165,7 @@ function updateDrawer() {
     const mo = S.durationPrice || S.planPrice;
     if (mo > 0) {
       const total = mo + S.accTotal;
+      totalMonthly = total;
       priceEl.innerHTML = `KD ${total % 1 === 0 ? total : total.toFixed(1)}<span>/mo.</span>`;
       ready = (S.planGroup === 'shabab' && !!S.duration) ||
               (S.planGroup === 'wiyana' && !!S.duration);
@@ -1709,6 +2175,17 @@ function updateDrawer() {
     }
   } else {
     priceEl.innerHTML = `KD 0<span>/mo.</span>`;
+  }
+
+  // Trade-in block in drawer
+  drawerTotalMonthly = totalMonthly;
+  if (tradeinDevice && tradeinPrice && totalMonthly > 0) {
+    const freeMonths = Math.floor(tradeinPrice / totalMonthly);
+    document.getElementById('drawerTradeInAmt').textContent = 'KD ' + tradeinPrice;
+    document.getElementById('drawerFreeMonths').textContent = freeMonths;
+    tiBlock.style.display = 'flex';
+  } else {
+    tiBlock.style.display = 'none';
   }
 
   btn.classList.toggle('active', ready);
@@ -1727,6 +2204,25 @@ function closeExceedModal() {
 }
 function handleExceedOverlayClick(e) {
   if (e.target === document.getElementById('exceedOverlay')) closeExceedModal();
+}
+
+// ── TRADE-IN INFO MODAL ──
+function openTradeInInfoModal() {
+  const freeMonths = parseInt(document.getElementById('drawerFreeMonths').textContent) || 0;
+  const monthly = drawerTotalMonthly > 0 ? drawerTotalMonthly.toFixed(2) : '–';
+  document.getElementById('tradeinInfoText').innerHTML =
+    `Your trade-in value of <strong>KD ${tradeinPrice}</strong> is divided by your total monthly price of <strong>KD ${monthly}/mo.</strong> — giving you <strong>${freeMonths} free month${freeMonths !== 1 ? 's' : ''}</strong>. Zain covers those months from your trade-in credit, so you pay nothing during that period.`;
+  const overlay = document.getElementById('tradeinInfoOverlay');
+  overlay.style.display = 'flex';
+  requestAnimationFrame(() => requestAnimationFrame(() => overlay.classList.add('open')));
+}
+function closeTradeInInfoModal() {
+  const overlay = document.getElementById('tradeinInfoOverlay');
+  overlay.classList.remove('open');
+  document.getElementById('tradeinInfoSheet').addEventListener('transitionend', () => { overlay.style.display = 'none'; }, { once: true });
+}
+function handleTradeInInfoOverlayClick(e) {
+  if (e.target === document.getElementById('tradeinInfoOverlay')) closeTradeInInfoModal();
 }
 
 // ── PAYMENT MODAL ──
