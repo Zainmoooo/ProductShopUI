@@ -741,9 +741,21 @@ html, body {
   transition: min-height 0.25s;
 }
 .drawer-left { display: flex; flex-direction: column; gap: 6px; }
-.drawer-price-val { font-size: 20px; font-weight: 800; color: var(--dark); font-family: var(--font); }
-.drawer-price-val span { font-size: 13px; font-weight: 500; }
+.drawer-price-row { display: flex; align-items: center; gap: 6px; }
+.drawer-price-val { font-size: 18px; font-weight: 700; color: var(--dark); font-family: var(--font); }
+.drawer-price-val span { font-size: 12px; font-weight: 400; }
 .drawer-price-label { font-size: 12px; font-weight: 400; color: var(--gray2); margin-top: 3px; font-family: var(--font); }
+/* ── PRICE BREAKDOWN MODAL ── */
+.breakdown-list { display: flex; flex-direction: column; }
+.breakdown-row { display: flex; align-items: center; justify-content: space-between; padding: 12px 8px; border-bottom: 0.5px solid #e5e5e5; }
+.breakdown-row-label { font-size: 14px; font-weight: 400; color: #404040; font-family: var(--font); }
+.breakdown-row-value { font-size: 14px; font-weight: 700; color: #171717; font-family: var(--font); }
+.breakdown-total-row { display: flex; align-items: center; justify-content: space-between; padding: 14px 8px 4px; }
+.breakdown-total-row span:first-child { font-size: 16px; font-weight: 700; color: #171717; font-family: var(--font); }
+.breakdown-total-row span:last-child { font-size: 16px; font-weight: 800; color: var(--pink); font-family: var(--font); }
+.drawer-insurance-block { display: none; flex-direction: column; gap: 2px; }
+.drawer-insurance-val { font-size: 18px; font-weight: 700; color: var(--dark); font-family: var(--font); }
+.drawer-insurance-label { font-size: 14px; font-weight: 400; color: var(--gray2); font-family: var(--font); }
 .drawer-tradein-block { display: none; flex-direction: column; gap: 2px; margin-top: 2px; }
 .drawer-tradein-val { font-size: 18px; font-weight: 700; color: var(--dark); font-family: var(--font); }
 .drawer-tradein-val .drawer-tradein-suffix { font-size: 12px; font-weight: 400; color: var(--gray2); }
@@ -808,6 +820,32 @@ html, body {
 .tradein-option-left { flex: 1; }
 .tradein-option-title { font-size: 16px; font-weight: 700; color: var(--dark); font-family: var(--font); }
 .tradein-option-subtitle { font-size: 14px; font-weight: 400; color: var(--gray1); font-family: var(--font); margin-top: 4px; }
+/* ── ZAIN INSURANCE ── */
+.ins-cards { display: flex; flex-direction: column; gap: 8px; }
+.ins-option {
+  display: flex; align-items: center; gap: 8px;
+  padding: 16px; min-height: 92px;
+  border-radius: 16px; border: 0.5px solid rgba(0,0,0,0.2);
+  background: var(--white); cursor: pointer; transition: all 0.2s;
+}
+.ins-option.selected {
+  border: 1px solid var(--pink-border);
+  box-shadow: inset 0 4px 7px var(--pink-shadow);
+}
+.ins-option-left { flex: 1; }
+.ins-option-title { font-size: 16px; font-weight: 700; color: var(--dark); font-family: var(--font); }
+.ins-option-subtitle { font-size: 14px; font-weight: 400; color: var(--gray1); font-family: var(--font); margin-top: 4px; }
+.ins-option-price { font-size: 16px; font-weight: 700; color: var(--dark); font-family: var(--font); margin-top: 6px; }
+.ins-btn {
+  flex-shrink: 0;
+  padding: 10px 20px; border-radius: 8px;
+  border: 1px solid var(--pink-border); background: white;
+  color: var(--pink); font-size: 14px; font-weight: 700; font-family: var(--font);
+  cursor: pointer; transition: all 0.2s;
+}
+.ins-option.selected .ins-btn {
+  background: var(--pink); border-color: var(--pink); color: white;
+}
 .tradein-sel-row { display: flex; align-items: center; gap: 10px; }
 .tradein-sel-row + .tradein-sel-row { margin-top: 4px; }
 .tradein-sel-icon { width: 20px; height: 20px; flex-shrink: 0; display: flex; align-items: center; justify-content: center; }
@@ -1306,6 +1344,38 @@ html, body {
     </div>
 
     <!-- TRADE-IN -->
+    <!-- ZAIN INSURANCE -->
+    <div class="section" id="secInsurance" style="display:none">
+      <p class="section-title">Zain <strong>Insurance.</strong></p>
+      <p class="section-subtitle">Get <strong style="color:#171717;font-weight:700">1-year cover</strong> to protect your new device.</p>
+      <div class="ins-cards">
+        <!-- Monthly (commitment only) -->
+        <div class="ins-option" id="insMonthly" onclick="selectInsurance('monthly')">
+          <div class="ins-option-left">
+            <div class="ins-option-title">Monthly</div>
+            <div class="ins-option-subtitle">Spread the cost over 12 months.</div>
+            <div class="ins-option-price">KD 9/mo.</div>
+          </div>
+          <button class="ins-btn" id="insMonthlyBtn">Add</button>
+        </div>
+        <!-- Full amount (upfront) -->
+        <div class="ins-option" id="insUpfront" onclick="selectInsurance('upfront')">
+          <div class="ins-option-left">
+            <div class="ins-option-title">Full amount</div>
+            <div class="ins-option-subtitle">One-year cover, paid once.</div>
+            <div class="ins-option-price">KD 108</div>
+          </div>
+          <button class="ins-btn" id="insUpfrontBtn">Add</button>
+        </div>
+        <!-- No insurance -->
+        <div class="ins-option" id="insNone" onclick="selectInsurance('none')">
+          <div class="ins-option-left">
+            <div class="ins-option-title">No Zain insurance</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
     <div class="section" id="secTradeIn" style="display:none">
       <p class="section-title">Trade in <strong>your old device.</strong></p>
       <p class="section-subtitle">Get <strong style="color:#171717;font-weight:700">KD 100 – 200</strong> credit toward your new device.</p>
@@ -1653,8 +1723,15 @@ html, body {
   <div class="drawer">
     <div class="drawer-left">
       <div>
-        <div class="drawer-price-val" id="drawerPrice">KD 0<span>/mo.</span></div>
+        <div class="drawer-price-row">
+          <div class="drawer-price-val" id="drawerPrice">KD 0<span>/mo.</span></div>
+          <svg id="drawerBreakdownBtn" onclick="openBreakdownModal()" style="display:none;cursor:pointer;flex-shrink:0" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#737373" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg>
+        </div>
         <div class="drawer-price-label">Total monthly price</div>
+      </div>
+      <div class="drawer-insurance-block" id="drawerInsuranceBlock" style="display:none">
+        <div class="drawer-insurance-val" id="drawerInsuranceAmt">KD 108</div>
+        <div class="drawer-insurance-label">Zain Insurance</div>
       </div>
       <div class="drawer-tradein-block" id="drawerTradeInBlock">
         <div class="drawer-tradein-val">
@@ -1723,6 +1800,36 @@ html, body {
   </div>
 </div>
 
+<!-- ── PRICE BREAKDOWN MODAL (placeholder — restyle to Figma later) ── -->
+<div class="exceed-overlay" id="breakdownOverlay" onclick="handleBreakdownOverlayClick(event)">
+  <div class="exceed-sheet" id="breakdownSheet">
+    <div class="exceed-drawer">
+      <div class="exceed-drawer-pill"></div>
+    </div>
+    <div class="exceed-nav">
+      <span class="exceed-nav-title">Price breakdown</span>
+      <button class="exceed-close-btn" onclick="closeBreakdownModal()">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+          <path d="M18 6L6 18M6 6l12 12" stroke="#171717" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </button>
+    </div>
+    <div class="exceed-body">
+      <div class="breakdown-list" id="breakdownRows"></div>
+      <div class="breakdown-total-row">
+        <span>Total</span>
+        <span id="breakdownTotalVal">KD 0</span>
+      </div>
+    </div>
+    <div class="exceed-cta-wrap">
+      <button class="exceed-cta" onclick="closeBreakdownModal()">Got it</button>
+    </div>
+    <div class="exceed-home">
+      <div class="exceed-home-pill"></div>
+    </div>
+  </div>
+</div>
+
 <script>
 // ── STATE ──
 const S = {
@@ -1732,8 +1839,11 @@ const S = {
   plan: null, planGroup: null, planPrice: 0,
   duration: null, durationPrice: 0,
   accTotal: 0,
+  insurance: null,
   exceedMode: false
 };
+const INS_MONTHLY_PRICE = 9;
+const INS_UPFRONT_PRICE = 108;
 
 // ── SLIDER ──
 let curSlide = 0;
@@ -1855,11 +1965,16 @@ function selectPurchase(card, type) {
   document.getElementById('tradeinCard2').classList.remove('selected');
 
   const tiEl = document.getElementById('secTradeIn');
+  const insEl = document.getElementById('secInsurance');
+  resetInsurance();
 
   if (type === 'existing') {
     unlock('secZainPlusDuration');
     hide('secPlan');
     hide('secDuration');
+    configureInsuranceFor('commitment');
+    insEl.style.display = 'block';
+    insEl.classList.add('locked');
     tiEl.style.display = 'block';
     tiEl.classList.add('locked');
     smoothScroll('secZainPlusDuration');
@@ -1867,17 +1982,24 @@ function selectPurchase(card, type) {
     hide('secZainPlusDuration');
     unlock('secPlan');
     hide('secDuration');
+    configureInsuranceFor('commitment');
+    insEl.style.display = 'block';
+    insEl.classList.add('locked');
     tiEl.style.display = 'block';
     tiEl.classList.add('locked');
     smoothScroll('secPlan');
   } else {
+    // Cash: no trade-in; insurance shows active (Full amount + No insurance)
     hide('secZainPlusDuration');
     hide('secPlan');
     hide('secDuration');
     tiEl.style.display = 'none';
     tiEl.classList.remove('locked');
-    unlock('secAcc');
-    smoothScroll('secAcc');
+    configureInsuranceFor('cash');
+    insEl.style.display = 'block';
+    insEl.classList.remove('locked');
+    lockSection('secAcc');
+    smoothScroll('secInsurance');
   }
   updateDrawer();
 }
@@ -1934,10 +2056,10 @@ function selectPlan(card, group, key, price) {
     S.exceedMode = false;
     document.querySelectorAll('#secDuration .duration-card').forEach(c => c.classList.remove('exceed-zain'));
     hide('secDuration');
-    const tiEl2 = document.getElementById('secTradeIn');
-    tiEl2.style.display = 'block';
-    tiEl2.classList.remove('locked');
-    smoothScroll('secTradeIn');
+    const insEl = document.getElementById('secInsurance');
+    insEl.style.display = 'block';
+    insEl.classList.remove('locked');
+    smoothScroll('secInsurance');
   }
   updateDrawer();
 }
@@ -1947,10 +2069,10 @@ function selectZainPlusDurationStandalone(card, months, price) {
   document.querySelectorAll('#secZainPlusDuration .duration-card').forEach(c => c.classList.remove('selected'));
   card.classList.add('selected');
   S.duration = months; S.durationPrice = price;
-  const tiEl = document.getElementById('secTradeIn');
-  tiEl.style.display = 'block';
-  tiEl.classList.remove('locked');
-  smoothScroll('secTradeIn');
+  const insEl = document.getElementById('secInsurance');
+  insEl.style.display = 'block';
+  insEl.classList.remove('locked');
+  smoothScroll('secInsurance');
   updateDrawer();
 }
 
@@ -1968,10 +2090,64 @@ function selectDuration(card, months, price) {
   document.querySelectorAll('#secDuration .duration-card').forEach(c => c.classList.remove('selected'));
   card.classList.add('selected');
   S.duration = months; S.durationPrice = price;
-  const tiEl = document.getElementById('secTradeIn');
-  tiEl.style.display = 'block';
-  tiEl.classList.remove('locked');
-  smoothScroll('secTradeIn');
+  const insEl = document.getElementById('secInsurance');
+  insEl.style.display = 'block';
+  insEl.classList.remove('locked');
+  smoothScroll('secInsurance');
+  updateDrawer();
+}
+
+// ── ZAIN INSURANCE ──
+function resetInsurance() {
+  S.insurance = null;
+  ['insMonthly', 'insUpfront', 'insNone'].forEach(id => document.getElementById(id).classList.remove('selected'));
+  document.getElementById('insMonthlyBtn').textContent = 'Add';
+  document.getElementById('insUpfrontBtn').textContent = 'Add';
+}
+
+function configureInsuranceFor(type) {
+  // cash: only Full amount + No insurance. commitment: Monthly + Full amount + No insurance
+  document.getElementById('insMonthly').style.display = (type === 'cash') ? 'none' : 'flex';
+}
+
+function selectInsurance(type) {
+  // Toggle off a selected paid option (Remove)
+  if ((type === 'monthly' || type === 'upfront') && S.insurance === type) {
+    S.insurance = null;
+    const card = document.getElementById(type === 'monthly' ? 'insMonthly' : 'insUpfront');
+    const btn = document.getElementById(type === 'monthly' ? 'insMonthlyBtn' : 'insUpfrontBtn');
+    card.classList.remove('selected');
+    btn.textContent = 'Add';
+    updateDrawer();
+    return;
+  }
+
+  S.insurance = type;
+
+  // Visual state
+  ['insMonthly', 'insUpfront', 'insNone'].forEach(id => document.getElementById(id).classList.remove('selected'));
+  document.getElementById('insMonthlyBtn').textContent = 'Add';
+  document.getElementById('insUpfrontBtn').textContent = 'Add';
+  if (type === 'monthly') {
+    document.getElementById('insMonthly').classList.add('selected');
+    document.getElementById('insMonthlyBtn').textContent = 'Remove';
+  } else if (type === 'upfront') {
+    document.getElementById('insUpfront').classList.add('selected');
+    document.getElementById('insUpfrontBtn').textContent = 'Remove';
+  } else if (type === 'none') {
+    document.getElementById('insNone').classList.add('selected');
+  }
+
+  // Unlock the next step
+  if (S.purchase === 'cash') {
+    unlock('secAcc');
+    smoothScroll('secAcc');
+  } else {
+    const tiEl = document.getElementById('secTradeIn');
+    tiEl.style.display = 'block';
+    tiEl.classList.remove('locked');
+    smoothScroll('secTradeIn');
+  }
   updateDrawer();
 }
 
@@ -2148,13 +2324,15 @@ function updateDrawer() {
   let totalMonthly = 0;
 
   if (S.purchase === 'cash' && S.storage) {
-    const total = S.storageBasePrice + S.accTotal;
-    priceEl.innerHTML = `KD ${total.toFixed(1)}<span> total</span>`;
+    const insUpfront = S.insurance === 'upfront' ? INS_UPFRONT_PRICE : 0;
+    const total = S.storageBasePrice + S.accTotal + insUpfront;
+    priceEl.innerHTML = `KD ${total.toFixed(1)}`;
     ready = true;
   } else if (S.purchase === 'existing') {
     const mo = S.durationPrice;
     if (mo > 0) {
-      const total = mo + S.accTotal;
+      const insMonthly = S.insurance === 'monthly' ? INS_MONTHLY_PRICE : 0;
+      const total = mo + S.accTotal + insMonthly;
       totalMonthly = total;
       priceEl.innerHTML = `KD ${total % 1 === 0 ? total : total.toFixed(1)}<span>/mo.</span>`;
       ready = true;
@@ -2164,7 +2342,8 @@ function updateDrawer() {
   } else if (S.purchase === 'newline') {
     const mo = S.durationPrice || S.planPrice;
     if (mo > 0) {
-      const total = mo + S.accTotal;
+      const insMonthly = S.insurance === 'monthly' ? INS_MONTHLY_PRICE : 0;
+      const total = mo + S.accTotal + insMonthly;
       totalMonthly = total;
       priceEl.innerHTML = `KD ${total % 1 === 0 ? total : total.toFixed(1)}<span>/mo.</span>`;
       ready = (S.planGroup === 'shabab' && !!S.duration) ||
@@ -2176,6 +2355,21 @@ function updateDrawer() {
   } else {
     priceEl.innerHTML = `KD 0<span>/mo.</span>`;
   }
+
+  // Zain Insurance one-time block — commitment purchase with Full amount (upfront)
+  const isCommitment = (S.purchase === 'existing' || S.purchase === 'newline');
+  const insBlock = document.getElementById('drawerInsuranceBlock');
+  if (isCommitment && S.insurance === 'upfront') {
+    document.getElementById('drawerInsuranceAmt').textContent = 'KD ' + INS_UPFRONT_PRICE;
+    insBlock.style.display = 'flex';
+  } else {
+    insBlock.style.display = 'none';
+  }
+
+  // Price breakdown icon — cash+upfront or commitment+monthly (commitment+upfront shows the explicit block above)
+  document.getElementById('drawerBreakdownBtn').style.display =
+    ((S.purchase === 'cash' && S.insurance === 'upfront') ||
+     (isCommitment && S.insurance === 'monthly')) ? 'inline-flex' : 'none';
 
   // Trade-in block in drawer
   drawerTotalMonthly = totalMonthly;
@@ -2189,6 +2383,14 @@ function updateDrawer() {
   }
 
   btn.classList.toggle('active', ready);
+
+  // Keep bottom scroll space in sync with the (dynamic) drawer height so
+  // the last section's controls are never hidden behind the drawer.
+  const drawerEl = document.querySelector('.drawer');
+  const scrollArea = document.querySelector('.scroll-area');
+  if (drawerEl && scrollArea) {
+    scrollArea.style.paddingBottom = (drawerEl.offsetHeight + 24) + 'px';
+  }
 }
 
 // ── EXCEED ZAIN+ MODAL ──
@@ -2223,6 +2425,47 @@ function closeTradeInInfoModal() {
 }
 function handleTradeInInfoOverlayClick(e) {
   if (e.target === document.getElementById('tradeinInfoOverlay')) closeTradeInInfoModal();
+}
+
+// ── PRICE BREAKDOWN MODAL ──
+function openBreakdownModal() {
+  const money = v => 'KD ' + (v % 1 === 0 ? v : v.toFixed(1));
+  const rows = [];
+  let totalText;
+
+  if (S.purchase === 'cash') {
+    // One-time breakdown
+    if (S.storage) rows.push([`iPhone 17 Pro (${S.storage}GB)`, money(S.storageBasePrice)]);
+    if (S.insurance === 'upfront') rows.push(['Zain Insurance (1 year)', money(INS_UPFRONT_PRICE)]);
+    if (S.accTotal > 0) rows.push(['Accessories', money(S.accTotal)]);
+    const total = S.storageBasePrice + (S.insurance === 'upfront' ? INS_UPFRONT_PRICE : 0) + S.accTotal;
+    totalText = money(total);
+  } else {
+    // Commitment (Z+ / Wiyana) — monthly breakdown
+    const mo = S.durationPrice || S.planPrice;
+    if (mo > 0) rows.push(['Monthly plan', money(mo) + '/mo.']);
+    if (S.accTotal > 0) rows.push(['Accessories', money(S.accTotal) + '/mo.']);
+    if (S.insurance === 'monthly') rows.push(['Zain Insurance', money(INS_MONTHLY_PRICE) + '/mo.']);
+    if (S.insurance === 'upfront') rows.push(['Zain Insurance (one-time)', money(INS_UPFRONT_PRICE)]);
+    const totalMo = mo + S.accTotal + (S.insurance === 'monthly' ? INS_MONTHLY_PRICE : 0);
+    totalText = money(totalMo) + '/mo.';
+  }
+
+  document.getElementById('breakdownRows').innerHTML = rows.map(([label, val]) =>
+    `<div class="breakdown-row"><span class="breakdown-row-label">${label}</span><span class="breakdown-row-value">${val}</span></div>`
+  ).join('');
+  document.getElementById('breakdownTotalVal').textContent = totalText;
+  const overlay = document.getElementById('breakdownOverlay');
+  overlay.style.display = 'flex';
+  requestAnimationFrame(() => requestAnimationFrame(() => overlay.classList.add('open')));
+}
+function closeBreakdownModal() {
+  const overlay = document.getElementById('breakdownOverlay');
+  overlay.classList.remove('open');
+  document.getElementById('breakdownSheet').addEventListener('transitionend', () => { overlay.style.display = 'none'; }, { once: true });
+}
+function handleBreakdownOverlayClick(e) {
+  if (e.target === document.getElementById('breakdownOverlay')) closeBreakdownModal();
 }
 
 // ── PAYMENT MODAL ──
